@@ -39,14 +39,31 @@ def findNew(knownAlerts, gotAlerts):
             newAlerts.append(a)
     return newAlerts
 
-knownAlerts = []
+def readOldAlerts():
+    knownAlerts = []
+    try:
+        with open("old_alerts.txt", "r") as fin:
+            for line in fin:
+                a = line.strip().split('||')
+                knownAlerts.append(a)
+    except:
+        pass
+    return knownAlerts
+
+knownAlerts = readOldAlerts()
+print('old')
+for a in knownAlerts:
+    print(' '.join(a))
+
 while True:
     gotAlerts = obtainLastAlerts()
     newAlerts = findNew(knownAlerts, gotAlerts)
     if len(newAlerts) > 0:
         print(datetime.now())
-        for a in newAlerts:
-            print(' '.join(a))
-            knownAlerts.append(a)
+        with open("old_alerts.txt", "a") as fout:
+            for a in newAlerts:
+                print(' '.join(a))
+                knownAlerts.append(a)
+                fout.write('||'.join(a) + '\n')
     time.sleep(1)
-    # print(a)
+
