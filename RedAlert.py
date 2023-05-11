@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
 import re
+from mastodon import Mastodon
+import json
 
 def obtainLastAlerts():
     resp = requests.get('https://t.me/s/PikudHaOref_all')
@@ -50,6 +52,14 @@ def readOldAlerts():
         pass
     return knownAlerts
 
+secrets = json.load(open("secrets.json"))
+mastodon = Mastodon(
+    client_id = secrets["client_id"],
+    client_secret = secrets["client_secret"],
+    access_token = secrets["access_token"],
+    api_base_url = 'https://' + secrets["mastodon_hostname"],
+)
+
 knownAlerts = readOldAlerts()
 print('old')
 for a in knownAlerts:
@@ -65,5 +75,7 @@ while True:
                 print(' '.join(a))
                 knownAlerts.append(a)
                 fout.write('||'.join(a) + '\n')
+                toot_text = '||'.join(a)
+                mastodon.status_post(toot_text, in_reply_to_id=None, visibility='unlisted')
     time.sleep(1)
 
