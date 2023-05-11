@@ -75,7 +75,8 @@ while True:
                 print(' '.join(a))
                 knownAlerts.append(a)
                 fout.write('||'.join(a) + '\n')
-                toot_text = '||'.join(a)
+                toot_text = '\n'.join(a)
+                # print(toot_text)
                 mastodon.status_post(toot_text, in_reply_to_id=None, visibility='unlisted')
     time.sleep(1)
 
