@@ -9,7 +9,7 @@ from MastoAlerts import MastoAlerts
 masto = MastoAlerts()
 knownAlerts = masto.fetch_toots()
 print('\npast:')
-for a in knownAlerts:
+for a in reversed(knownAlerts):
     print(' '.join(a))
 while True:
     gotAlerts = obtainLastAlerts()
