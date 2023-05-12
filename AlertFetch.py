@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString, Tag
 import requests
 from datetime import datetime
 import re
@@ -11,8 +11,9 @@ def obtainLastAlerts():
     alerts = []
     for onediv in divs:
         # print('===>')
-        items = [t.get_text().strip() for t in onediv if t.get_text().strip() != '']
-        if items[0] == '🚨': # and 'ירי רקטות וטילים' in items[1]:
+        filtered = [t for t in onediv if (not isinstance(t, NavigableString)) and (not isinstance(t, Tag))]
+        items = [t.get_text().strip() for t in filtered if t.get_text().strip() != '']
+        if len(items) > 1 and items[0] == '🚨': # and 'ירי רקטות וטילים' in items[1]:
             remove_items = ['🚨', 'https://www.oref.org.il/12761-he/Pakar.aspx', 'להנחיות המלאות -']
             items = [t for t in items if t not in remove_items]
             timeitems = [t for t in items if re.search(r'[\[\]/:]', t)]
