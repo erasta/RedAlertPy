@@ -11,8 +11,8 @@ def obtainLastAlerts():
     divs = bs.find_all("div", {"class": "tgme_widget_message_text"})
     alerts = []
     for onediv in divs:
-        # print('===>')
-        filtered = [t for t in onediv if (not isinstance(t, NavigableString))]
+        # print('===>', onediv)
+        filtered = [t for t in onediv] # if (not isinstance(t, NavigableString))]
         items = [t.get_text().strip() for t in filtered if t.get_text().strip() != ""]
         if len(items) > 1 and items[0] == "🚨":  # and 'ירי רקטות וטילים' in items[1]:
             remove_items = [
