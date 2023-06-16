@@ -37,12 +37,17 @@ class MastoAlerts:
         print("create image:", datetime.now() - start)
 
         os.makedirs("images", exist_ok=True)
-        self.imageCreator.savefig(fig, "images/a" + str(datetime.now()) + ".png")
+        # image_name = "images/a" + str(datetime.now()) + ".png"
+        image_name = "images/a.png"
+        self.imageCreator.savefig(fig, image_name)
 
         print("save image:", datetime.now() - start)
 
         if actually_do_posts:
-            self.mastodon.status_post(one_alert.text(), in_reply_to_id=None, visibility="unlisted")
+            media_dict = self.mastodon.media_post(image_name, "image/png")
+            self.mastodon.status_post(
+                one_alert.text(), in_reply_to_id=None, visibility="unlisted", media_ids=[media_dict]
+            )
             print("posted: " + one_alert.show())
         else:
             print("not posted: " + one_alert.show(True))

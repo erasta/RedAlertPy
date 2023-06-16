@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 import time
 from datetime import datetime
@@ -35,4 +36,8 @@ if __name__ == "__main__":
     parser.add_argument("--posts", action="store_true")
     args = parser.parse_args()
     print(args)
+
+    for f in os.listdir("images"):
+        os.remove("images/" + f)
+
     RedAlert(args.posts).go()
