@@ -32,7 +32,7 @@ class MastoAlerts:
         print()
         start = datetime.now()
 
-        fig = self.imageCreator.places_to_image(one_alert.places(), add_title=True)
+        fig = self.imageCreator.places_to_image(one_alert.places(), add_title=False)
 
         print("create image:", datetime.now() - start)
 
