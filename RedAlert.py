@@ -17,10 +17,14 @@ class RedAlert:
 
     def go(self):
         self.knownAlerts = self.masto.fetch_toots()
+        lastTootsFetch = datetime.now()
         print("\npast:")
         for a in reversed(self.knownAlerts):
             print(a.show())
         while True:
+            if (datetime.now() - lastTootsFetch).total_seconds() > 60:
+                self.knownAlerts = self.masto.fetch_toots()
+                lastTootsFetch = datetime.now()
             gotAlerts = self.fetcher.obtainNewAlerts()
             newAlerts = self.masto.filter_new_alerts_by_toots(gotAlerts, self.knownAlerts)
             if len(newAlerts) > 0:
