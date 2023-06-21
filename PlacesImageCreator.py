@@ -5,7 +5,7 @@ import pandas
 from shapely.geometry import shape
 from geopy.geocoders import Nominatim
 
-from Alert import revstr
+from Alert import Alert
 
 
 class PlacesImageCreator:
@@ -38,7 +38,7 @@ class PlacesImageCreator:
             gdf = geopandas.GeoDataFrame(pandas.concat([gdf, points_gdf]))
 
             places_not_found = set(places_not_geolocated) - set(points_gdf["loc"])
-            print("not found:", [revstr(n) for n in places_not_found])
+            print("not found:", Alert.reverse_if_needed(places_not_found))
 
         return gdf
 

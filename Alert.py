@@ -1,9 +1,6 @@
 from __future__ import annotations
 import re
-
-
-def revstr(str):
-    return "".join(reversed(str))
+import os
 
 
 class Alert:
@@ -37,13 +34,29 @@ class Alert:
         places = [Alert.reg_paranthesis.sub("", t).strip() for t in places]
         return places
 
+    def show_places(self):
+        return str(Alert.reverse_if_needed(self.places()))
+        # if Alert.need_heb_rev:
+        #     return str([revstr(p) for p in self.places()])
+        # else:
+        #     return str(self.places())
+
     def show(self, also_places=False):
         """concat lines and reverse each line since hebrew is not shown well"""
-        ret = " ".join(l if re.search('[א-ת]', l) is None else revstr(l) for l in self.lines)
-        if also_places:
-            ret += '\n' + str([revstr(p) for p in self.places()])
-        return ret
+        return " ".join(Alert.reverse_if_needed(self.lines))
+        # fixed_lines = self.lines
+        # if Alert.need_heb_rev:
+        #     fixed_lines = [l if re.search("[א-ת]", l) is None else revstr(l) for l in fixed_lines]
+        # return " ".join(fixed_lines)
+
+    @staticmethod
+    def reverse_if_needed(parts):
+        if Alert.need_heb_rev:
+            return [p if re.search("[א-ת]", p) is None else "".join(reversed(p)) for p in parts]
+        else:
+            return parts
 
     non_places = ["ירי רקטות וטילים", "היכנסו למרחב המוגן"]
     reg_date = re.compile("^[0-9:\- ]+$")
     reg_paranthesis = re.compile("\([^)]*\)")
+    need_heb_rev = "TERM_PROGRAM" in os.environ.keys() and os.environ["TERM_PROGRAM"] == "vscode"

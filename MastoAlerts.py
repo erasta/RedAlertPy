@@ -48,9 +48,9 @@ class MastoAlerts:
             self.mastodon.status_post(
                 one_alert.text(), in_reply_to_id=None, visibility="unlisted", media_ids=[media_dict]
             )
-            print("posted: " + one_alert.show())
+            print("posted: " + one_alert.show() + '\n' + one_alert.show_places())
         else:
-            print("not posted: " + one_alert.show(True))
+            print("not posted: " + one_alert.show() + '\n' + one_alert.show_places())
 
 
 if __name__ == "__main__":
