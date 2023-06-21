@@ -1,3 +1,4 @@
+import json
 from random import randrange
 import contextily as cx
 import matplotlib.pyplot as plt
@@ -27,19 +28,22 @@ class PlacesImageCreator:
         ax.set_xlim(xmin - xmarg, xmax + xmarg)
         ax.set_ylim(ymin - ymarg, ymax + ymarg)
 
+    def location_to_geom(self, name):
+        loc = self.geolocator.geocode(name, geometry="geojson", timeout=10)
+        if loc is not None:
+            poly = loc.raw["geojson"]
+            return shape(poly)
+        point = self.coords_gdf[self.coords_gdf["loc"].isin([name])]
+        if len(point) > 0:
+            return point["geometry"].iloc[0]
+        return None
+
     def places_to_gdf(self, names):
-        locations = [self.geolocator.geocode(n, geometry="geojson", timeout=10) for n in names]
-        polys = [l.raw["geojson"] for l in locations if l is not None]
-        geom = [shape(i) for i in polys]
-        gdf = geopandas.GeoDataFrame({"geometry": geom}, crs="EPSG:4326")
-
-        places_not_geolocated = [n for l, n in zip(locations, names) if l is None]
-        if any(places_not_geolocated):
-            points_gdf = self.coords_gdf[self.coords_gdf["loc"].isin(places_not_geolocated)]
-            gdf = geopandas.GeoDataFrame(pandas.concat([gdf, points_gdf]))
-
-            places_not_found = set(places_not_geolocated) - set(points_gdf["loc"])
-            print("not found:", Alert.reverse_if_needed(places_not_found))
+        geoms = [self.location_to_geom(n) for n in names]
+        geoms_filtered = [g for g in geoms if g is not None]
+        gdf = geopandas.GeoDataFrame({"geometry": geoms_filtered}, crs="EPSG:4326")
+        places_not_geolocated = [n for g, n in zip(geoms, names) if g is None]
+        print("not found:", Alert.reverse_if_needed(places_not_geolocated))
 
         return gdf
 
