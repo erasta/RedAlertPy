@@ -41,7 +41,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(args)
 
-    for f in os.listdir("images"):
-        os.remove("images/" + f)
+    if os.path.isdir("images"):
+        for f in os.listdir("images"):
+            os.remove("images/" + f)
 
     RedAlert(args.posts).go()
