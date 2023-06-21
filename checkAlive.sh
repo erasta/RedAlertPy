@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # echo hello
 cd $( realpath $(dirname -- "$0") )
 
