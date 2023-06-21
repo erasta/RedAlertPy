@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import time
 from datetime import datetime
 import traceback
@@ -9,8 +10,9 @@ from MastoAlerts import MastoAlerts
 
 
 class RedAlert:
-    def __init__(self, actually_do_posts=False) -> None:
+    def __init__(self, actually_do_posts=False, errors_to=None) -> None:
         self.actually_do_posts = actually_do_posts
+        self.errors_to = errors_to
         self.masto = MastoAlerts()
         self.fetcher = AlertFetch()
 
@@ -35,17 +37,22 @@ class RedAlert:
                 time.sleep(1)
         except KeyboardInterrupt:
             print("Stopping by keyboard")
+            return
         except Exception as ex:
-            print(f"Crush because of {type(ex).__name__}: {ex}")  # , ''.join(traceback.format_exception(e)))
-            self.masto.mastodon.status_post(
-                f"Crush because of {type(ex).__name__}: {ex}", in_reply_to_id=None, visibility="unlisted"
-            )
+            msg = f"Crush because of {type(ex).__name__}: {ex}\n{self.errors_to}"
+            print(msg)  # , ''.join(traceback.format_exception(e)))
+            self.masto.mastodon.status_post(msg, in_reply_to_id=None, visibility="direct")
             raise
 
 
 if __name__ == "__main__":
+    sys.stdout = open("last_run.txt", "w", 1)
+    sys.stderr = sys.stdout
+    print(datetime.now())
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--posts", action="store_true")
+    parser.add_argument("--errors-to")
     args = parser.parse_args()
     print(args)
 
@@ -53,4 +60,4 @@ if __name__ == "__main__":
         for f in os.listdir("images"):
             os.remove("images/" + f)
 
-    RedAlert(args.posts).go()
+    RedAlert(args.posts, args.errors_to).go()

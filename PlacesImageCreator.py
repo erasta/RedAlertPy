@@ -29,6 +29,7 @@ class PlacesImageCreator:
         ax.set_ylim(ymin - ymarg, ymax + ymarg)
 
     def location_to_geom(self, name):
+        # TODO cache locations by name in json 
         loc = self.geolocator.geocode(name, geometry="geojson", timeout=10)
         if loc is not None:
             poly = loc.raw["geojson"]
