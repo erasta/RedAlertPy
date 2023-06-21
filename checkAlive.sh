@@ -8,7 +8,9 @@ ps ax | grep -v grep | grep "python -m RedAlert" >> $LOG_FILE
 if ! ps ax | grep -v grep | grep --quiet "python -m RedAlert"
 then
     echo "starting new" >> $LOG_FILE
-    (pipenv run python -m RedAlert --posts &)
+    (pipenv run python -m RedAlert --posts &) >> $LOG_FILE 2>&1
 else
     echo "all is good not starting" >> $LOG_FILE
 fi
+
+
