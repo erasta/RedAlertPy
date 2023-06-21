@@ -27,7 +27,7 @@ class PlacesImageCreator:
         ax.set_ylim(ymin - ymarg, ymax + ymarg)
 
     def places_to_gdf(self, names):
-        locations = [self.geolocator.geocode(n, geometry="geojson") for n in names]
+        locations = [self.geolocator.geocode(n, geometry="geojson", timeout=10) for n in names]
         polys = [l.raw["geojson"] for l in locations if l is not None]
         geom = [shape(i) for i in polys]
         gdf = geopandas.GeoDataFrame({"geometry": geom}, crs="EPSG:4326")
