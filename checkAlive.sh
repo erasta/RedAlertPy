@@ -4,7 +4,7 @@ cd $( realpath $(dirname -- "$0") )
 
 if ! ps ax | grep -v grep | grep --quiet "python -m RedAlert"
 then
-    (python3 -m RedAlert --posts &)
+    (pipenv shell && python3 -m RedAlert --posts &)
     # echo not running
 # else
 #     echo running
