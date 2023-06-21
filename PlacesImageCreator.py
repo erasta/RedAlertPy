@@ -1,3 +1,4 @@
+from random import randrange
 import contextily as cx
 import matplotlib.pyplot as plt
 import geopandas
@@ -10,7 +11,7 @@ from Alert import Alert
 
 class PlacesImageCreator:
     def __init__(self) -> None:
-        self.geolocator = Nominatim(user_agent="red-alert-erasta")
+        self.geolocator = Nominatim(user_agent="red-alert-erasta-" + str(randrange(10000)))
         coords_df = pandas.read_csv("places_coords.csv")
         self.coords_gdf = geopandas.GeoDataFrame(
             coords_df, geometry=geopandas.points_from_xy(coords_df.long, coords_df.lat), crs="EPSG:4326"
