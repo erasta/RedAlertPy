@@ -14,9 +14,10 @@ class PlacesImageCreator:
     def __init__(self) -> None:
         self.geolocator = Nominatim(user_agent="red-alert-erasta-" + str(randrange(10000)))
         coords_df = pandas.read_csv("places_coords.csv")
-        self.coords_gdf = geopandas.GeoDataFrame(
-            coords_df, geometry=geopandas.points_from_xy(coords_df.long, coords_df.lat), crs="EPSG:4326"
-        )
+        coords_geom = geopandas.points_from_xy(coords_df.long, coords_df.lat)
+        self.coords_gdf = geopandas.GeoDataFrame(coords_df, geometry=coords_geom, crs="EPSG:4326")
+
+
 
     @staticmethod
     def stretch_gdf_plot(gdf, ax, meters):
