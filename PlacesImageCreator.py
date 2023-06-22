@@ -1,9 +1,11 @@
 import json
+import os
 from random import randrange
 import contextily as cx
 import matplotlib.pyplot as plt
 import geopandas
 import pandas
+from shapely import from_geojson, to_geojson
 from shapely.geometry import shape
 from geopy.geocoders import Nominatim
 
@@ -17,7 +19,11 @@ class PlacesImageCreator:
         coords_geom = geopandas.points_from_xy(coords_df.long, coords_df.lat)
         self.coords_gdf = geopandas.GeoDataFrame(coords_df, geometry=coords_geom, crs="EPSG:4326")
 
-
+        try:
+            with open("cache.geojson") as f_in:
+                self.geojsons = json.load(f_in)
+        except:
+            self.geojsons = {}
 
     @staticmethod
     def stretch_gdf_plot(gdf, ax, meters):
@@ -30,7 +36,20 @@ class PlacesImageCreator:
         ax.set_ylim(ymin - ymarg, ymax + ymarg)
 
     def location_to_geom(self, name):
-        # TODO cache locations by name in json 
+        if name in self.geojsons:
+            g = from_geojson(self.geojsons[name], "warn")
+        else:
+            g = self.location_to_geom_impl(name)
+            if g:
+                self.geojsons[name] = to_geojson(g)
+                try:
+                    with open("cache.geojson", "w") as f_out:
+                        json.dump(self.geojsons, f_out, ensure_ascii=False)
+                except:
+                    pass
+        return g
+
+    def location_to_geom_impl(self, name):
         loc = self.geolocator.geocode(name, geometry="geojson", timeout=10)
         if loc is not None:
             poly = loc.raw["geojson"]
