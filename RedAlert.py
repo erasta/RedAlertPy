@@ -46,15 +46,22 @@ class RedAlert:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--posts",
+        action="store_true",
+        help="use this to actually post to mastodon. when not set, new posts are just simulated.",
+    )
+    parser.add_argument(
+        "--errors-to",
+        help="set to a user(s) to mention on DMs when crushes occur, format @username@host.name",
+    )
+    args = parser.parse_args()
+    print(args)
+
     sys.stdout = open("last_run.txt", "w", 1)
     sys.stderr = sys.stdout
     print(datetime.now())
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--posts", action="store_true")
-    parser.add_argument("--errors-to")
-    args = parser.parse_args()
-    print(args)
 
     if os.path.isdir("images"):
         for f in os.listdir("images"):
