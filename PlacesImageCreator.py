@@ -28,7 +28,6 @@ class PlacesImageCreator:
     @staticmethod
     def stretch_gdf_plot(gdf, ax, meters):
         xmin, ymin, xmax, ymax = gdf.total_bounds
-        # print(xmin, ymin, xmax, ymax)
         dx, dy = xmax - xmin, ymax - ymin
         side = max(dx, dy) + meters / 111139
         xmarg, ymarg = (side - dx) / 2, (side - dy) / 2

@@ -36,18 +36,10 @@ class Alert:
 
     def show_places(self):
         return str(Alert.reverse_if_needed(self.places()))
-        # if Alert.need_heb_rev:
-        #     return str([revstr(p) for p in self.places()])
-        # else:
-        #     return str(self.places())
 
     def show(self, also_places=False):
         """concat lines and reverse each line since hebrew is not shown well"""
         return " ".join(Alert.reverse_if_needed(self.lines))
-        # fixed_lines = self.lines
-        # if Alert.need_heb_rev:
-        #     fixed_lines = [l if re.search("[א-ת]", l) is None else revstr(l) for l in fixed_lines]
-        # return " ".join(fixed_lines)
 
     @staticmethod
     def reverse_if_needed(parts):

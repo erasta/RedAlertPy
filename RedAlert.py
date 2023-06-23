@@ -39,7 +39,7 @@ class RedAlert:
             print("Stopping by keyboard")
             return
         except Exception as ex:
-            msg = f"Crush because of {type(ex).__name__}: {ex}\n{self.errors_to}"
+            msg = f"Crush because of {type(ex).__name__}: {ex}\n{''.join(traceback.format_exc())}\n{self.errors_to}"
             print(msg)  # , ''.join(traceback.format_exception(e)))
             self.masto.mastodon.status_post(msg, in_reply_to_id=None, visibility="direct")
             raise
