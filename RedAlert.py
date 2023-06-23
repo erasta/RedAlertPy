@@ -57,12 +57,12 @@ if __name__ == "__main__":
         help="set to a user(s) to mention on DMs when crushes occur, format @username@host.name",
     )
     args = parser.parse_args()
-    print(args)
 
     sys.stdout = open("last_run.txt", "w", 1)
     sys.stderr = sys.stdout
     print(datetime.now())
 
+    print(args)
     if os.path.isdir("images"):
         for f in os.listdir("images"):
             os.remove("images/" + f)
