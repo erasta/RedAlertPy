@@ -37,7 +37,7 @@ class AlertFetch:
                         # print('===>', str(info))
         except requests.ConnectionError as ex:
             msg = f"Got error {type(ex).__name__}: {ex}\n{''.join(traceback.format_exc())}"
-            if self.last_error != msg:
+            if getattr(self, 'last_error', '') != msg:
                 print(msg)
                 self.last_error = msg
         return alerts
